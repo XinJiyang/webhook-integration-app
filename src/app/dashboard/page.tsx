@@ -7,7 +7,13 @@ export default function Dashboard() {
   const [userId, setUserId] = useState('');
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<any[]>([]);
+  type Message = {
+    name: string;
+    message: string;
+    timestamp: number;
+  };
+
+  const [messages, setMessages] = useState<Message[]>([]);
 
   // Initialize userId and store it in localStorage to persist across page reloads
   useEffect(() => {
