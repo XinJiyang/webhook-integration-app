@@ -1,39 +1,26 @@
+// src/app/api/webhook/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-type Message = {
-  userId: string;
-  name: string;
-  message: string;
-  timestamp: number;
-};
-
-// Temporary in-memory database
-const messages: Record<string, Message[]> = {};
+const messagesByUser: Record<string, { name: string; message: string; timestamp: number }[]> = {};
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { userId, name, message } = body;
+  const { userId, name, message } = await req.json();
 
   if (!userId || !name || !message) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
   const newMessage = {
-    userId,
     name,
     message,
     timestamp: Date.now(),
   };
 
-  if (!messages[userId]) {
-    messages[userId] = [];
+  if (!messagesByUser[userId]) {
+    messagesByUser[userId] = [];
   }
-  messages[userId].push(newMessage);
 
-  return NextResponse.json({ success: true, data: newMessage });
-}
+  messagesByUser[userId].push(newMessage);
 
-// Expose in-memory data for the messages API (development use only)
-export function getMessages() {
-  return messages;
+  return NextResponse.json({ success: true });
 }

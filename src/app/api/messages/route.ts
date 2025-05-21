@@ -1,5 +1,9 @@
+// src/app/api/messages/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getMessages } from '../webhook/route';
+
+const messagesByUser =
+  globalThis.messagesStore ||
+  (globalThis.messagesStore = {});
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -9,8 +13,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
   }
 
-  const messages = getMessages();
-  const userMessages = messages[userId] || [];
-
-  return NextResponse.json(userMessages);
+  const messages = messagesByUser[userId] || [];
+  return NextResponse.json(messages);
 }
