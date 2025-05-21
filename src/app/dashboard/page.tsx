@@ -14,6 +14,7 @@ export default function Dashboard() {
   };
 
   const [messages, setMessages] = useState<Message[]>([]);
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
   // Initialize userId and store it in localStorage to persist across page reloads
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function Dashboard() {
 
     const payload = { userId, name, message };
 
-    await fetch('http://localhost:4000/webhook', {
+    await fetch(`${API_BASE}/webhook`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -46,7 +47,7 @@ export default function Dashboard() {
     if (!userId) return;
 
     const interval = setInterval(async () => {
-      const res = await fetch(`http://localhost:4000/messages/${userId}`);
+      const res = await fetch(`${API_BASE}/messages/${userId}`);
       const data = await res.json();
       setMessages(data);
     }, 2000);
